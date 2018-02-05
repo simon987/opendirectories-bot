@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+    <div>
+        <div id="report_wrapper">
+            <div id="chart-wrapper">
+                <canvas id="typesChart"></canvas>
+                <script src="/static/Chart.min.js"></script>
+                <script src="/static/js/report.js"></script>
+            </div>
+
+            <table id="info-table">
+                <tr>
+                    <th>Base url</th>
+                    <td>http://www.chrishaga.com/jodi/</td>
+                </tr>
+
+                <tr>
+                    <th>File count</th>
+                    <td>213123</td>
+                </tr>
+
+                <tr>
+                    <th>Total size</th>
+                    <td>321 GB</td>
+                </tr>
+
+                <tr>
+                    <th>Report date</th>
+                    <td>2018-32-123-123:00</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+
+{% endblock content %}

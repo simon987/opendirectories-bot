@@ -1,0 +1,51 @@
+.github-corner svg{
+    position: absolute;
+    right: 0;
+    top: 0;
+    mix-blend-mode: darken;
+    color: #ffffff;
+    fill: #000000;
+}
+
+.github-corner:hover .octo-arm {
+    animation:octocat-wave .56s;
+}
+
+@keyframes octocat-wave{
+    0%, 100% {
+        transform:rotate(0);
+    }
+    20%, 60% {
+        transform:rotate(-20deg);
+    }
+    40%, 80% {
+        transform:rotate(10deg);
+    }
+}
+
+#chart-wrapper {
+
+    height: 50%;
+    width: 50%;
+    display: inline-block;
+}
+
+#info-table {
+    display: inline-block;
+    vertical-align: top;
+}
+
+#info-table th {
+    text-align: left;
+}
+
+#info-table td {
+    text-align: right;
+}
+
+#report_wrapper {
+    text-align: center;
+    background-color: whitesmoke;
+    display: block;
+    padding: 30px 0;
+}

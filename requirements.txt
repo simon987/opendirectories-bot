@@ -1,0 +1,6 @@
+praw
+requests
+bs4
+humanfriendly
+jinja2
+flask
