@@ -68,12 +68,10 @@ class PageParser:
             return "d"
         return "f"
 
-
     @staticmethod
     def clean_page(text):
         text = text.replace("<A", "<a")
         text = text.replace("</A", "</a")
-        # text = text.replace("&", "&amp;")
         text = text.replace("<hr>", "")
 
         return text
@@ -108,11 +106,11 @@ class NginxParser(PageParser):
 
         soup = BeautifulSoup(text, "html.parser")
 
-        for link in soup.find("pre").find_all("a"):
-
-            parsed_link = self.parse_link(link, text, base_url)
-            if parsed_link is not None:
-                links[parsed_link[0]] = parsed_link[1]
+        for pre in soup.find_all("pre"):
+            for link in pre.find_all("a"):
+                parsed_link = self.parse_link(link, text, base_url)
+                if parsed_link is not None:
+                    links[parsed_link[0]] = parsed_link[1]
 
         return links
 
