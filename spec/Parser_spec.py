@@ -62,9 +62,11 @@ class ApacheParserTest(TestCase):
         root_page_file.close()
 
     def test_size_column(self):
-        result = self.parser.get_size_columns(['</a>', '175289', 'kB', '2008/10/21', '09:00:02', ''])
+        result = self.parser.get_size_columns(['</a>', '175289', 'kB', '2008/10/21', '09:00:02', ''], "")
+        result1 = self.parser.get_size_columns(['100pxfilename.jpg', '175289', 'kB', '2008/10/21', '09:00:02', ''], "100pxfilename.jpg")
 
         self.assertEqual(result, (1, 2))
+        self.assertEqual(result1, (1, 2))
 
 
     def test_link_count(self):
@@ -173,3 +175,37 @@ class ApacheParserTest4(TestCase):
 
         self.assertEqual(result["The.Big.Bang.Theory.S03E06.Football.fuer.Nerds.German.WS.DVDRip.XviD-DELiCiOUS.avi"]["size"], 175000000)
         self.assertEqual(result["The.Big.Bang.Theory.S03E03.Sex.oder.Pralinen.German.WS.DVDRip.XviD-DELiCiOUS.avi"]["size"], 0)
+
+
+class ApacheParserTest5(TestCase):
+
+    def setUp(self):
+        self.parser = ApacheParser()
+
+        root_page_file = open("test.html", "r")
+        self.root_page = root_page_file.read()
+        self.base_url = "http://archive.scene.org/pub/resources/docs/"
+        root_page_file.close()
+
+    def test_link_size(self):
+        result = self.parser.get_links(self.root_page, self.base_url)
+
+        self.assertEqual(result["17toilet.txt"]["size"], 12700)
+        self.assertEqual(result["288help.diz"]["size"], 9000)
+
+
+class ApacheParserTest7(TestCase):
+
+    def setUp(self):
+        self.parser = ApacheParser()
+
+        root_page_file = open("test_apache7.html", "r")
+        self.root_page = root_page_file.read()
+        self.base_url = "http://www.serenitystreetnews.com/videos/feb 2013/"
+        root_page_file.close()
+
+    def test_link_size(self):
+        result = self.parser.get_links(self.root_page, self.base_url)
+
+        self.assertEqual(result["700%20Emerald%20Tablets%20Dark%20Brothers%20-%20YouTube.flv"]["size"], 145000000)
+        self.assertEqual(result["Economic%20Collapse%20Survival%20Map%20-%20Risk%20Analysis%20of%20best%20area%20in%20United%20States%20-%20YouTube.flv"]["size"], 28000000)

@@ -1,6 +1,6 @@
 import os
 import re
-from urllib.parse import urljoin
+from urllib.parse import urljoin, unquote
 
 import humanfriendly
 from bs4 import BeautifulSoup
@@ -17,9 +17,15 @@ class PageParser:
         raise NotImplementedError()
 
     @staticmethod
-    def get_size_columns(cols):
+    def get_size_columns(cols, file_name):
 
         for i in range(len(cols)):
+
+            col_file_name = cols[i][0:cols[i].rfind("..>")]  # Some file names could be truncated: 'long_file_..>'
+            file_name = unquote(file_name)[0:len(col_file_name)]
+
+            if len(file_name) > 0 and file_name in col_file_name :
+                continue  # Skip if cols[i] is file name to avoid file names like 100px*.jpg to be parsed as 100 PB
 
             if i == len(cols) - 1:
                 try:
@@ -53,7 +59,7 @@ class PageParser:
 
         return text.lower().find("parent directory") == -1 and text != "Name" and text != "Last modified" and \
                text != "Size" and text != "Description " and text != "Description" and text != "../" and text != "" and\
-               text is not None
+               text is not None and text != ".."
 
     @staticmethod
     def file_type(link):
@@ -72,11 +78,12 @@ class PageParser:
 
         return text
 
-    def get_size(self, cols):
+    def get_size(self, cols, file_name):
 
         # Figure out which column(s) is the size one
-        size_cols = self.get_size_columns(cols)
+        size_cols = self.get_size_columns(cols, file_name)
         if size_cols is not None:
+
             col_start, col_end = size_cols
             self.size_unknown = False
 
@@ -131,6 +138,7 @@ class NginxParser(PageParser):
         try:
             if PageParser.should_save_link(link.text):
                 target = link.get("href")
+                short_file_name = os.path.split(target)[1]
                 full_link = urljoin(base_url, target)
                 file_type = PageParser.file_type(target)
 
@@ -142,7 +150,7 @@ class NginxParser(PageParser):
                     date_and_size = text[target_index:text.find("<a", target_index)]
 
                     cols = re.split("\s+", date_and_size)
-                    size = self.get_size(cols)
+                    size = self.get_size(cols[1:], short_file_name)
 
                     return target, dict(link=full_link, size=size, ext=extension, type=file_type)
                 else:
@@ -182,6 +190,7 @@ class ApacheParser(PageParser):
                     if PageParser.should_save_link(link.text):
 
                         target = link.get("href")
+                        short_file_name = os.path.split(target)[1]
                         file_type = PageParser.file_type(target)
                         full_link = urljoin(base_url, target)
 
@@ -191,7 +200,7 @@ class ApacheParser(PageParser):
                             cols = row.find_all("td")
                             for i in range(len(cols)):
                                 cols[i] = cols[i].string if cols[i].string is not None else "-"
-                            size = self.get_size(cols)
+                            size = self.get_size(cols[1:], short_file_name)
 
                             links[target] = dict(link=full_link, size=size, ext=extension, type=file_type)
                         else:
@@ -203,6 +212,7 @@ class ApacheParser(PageParser):
                 if PageParser.should_save_link(link.text):
 
                     target = link.get("href")
+                    short_file_name = os.path.split(target)[1]
                     full_link = urljoin(base_url, target)
                     file_type = PageParser.file_type(target)
 
@@ -214,7 +224,7 @@ class ApacheParser(PageParser):
                         date_and_size = text[target_index:text.find("</pre", target_index)] if text.find("<a", target_index) == -1 else date_and_size
 
                         cols = re.split("\s+", date_and_size)
-                        size = self.get_size(cols)
+                        size = self.get_size(cols[1:], short_file_name)
 
                         links[target] = dict(link=full_link, size=size, ext=extension, type=file_type)
                     else:

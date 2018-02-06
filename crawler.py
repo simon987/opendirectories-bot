@@ -92,8 +92,15 @@ class Crawler:
 
 
 if __name__ == "__main__":
-    c = Crawler("https://data.kemt.fei.tuke.sk/Mikrovlnova_technika/RFSim99/", True)
+    c = Crawler("http://dl.apkhome.org/", True)
     c.crawl()
-    print(c.files)
-    c.store_report("000008")
+
+    r = ReportBuilder(c.files, "http://dl.apkhome.org/")
+    print(r.get_total_size_formatted())
+
+    for f in c.files:
+        if f["size"] > 1000000:
+            print(f)
+
+    c.store_report("000009")
 
