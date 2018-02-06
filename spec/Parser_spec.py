@@ -18,7 +18,7 @@ class NginxParserTest(TestCase):
     def setUp(self):
         self.parser = NginxParser()
 
-        root_page_file = open("test_nginx_root.html", "r")
+        root_page_file = open("test_nginx1.html", "r")
         self.root_page = root_page_file.read()
         root_page_file.close()
 
@@ -57,7 +57,7 @@ class ApacheParserTest(TestCase):
     def setUp(self):
         self.parser = ApacheParser()
 
-        root_page_file = open("test_apache_root.html", "r")
+        root_page_file = open("test_apache1.html", "r")
         self.root_page = root_page_file.read()
         root_page_file.close()
 
@@ -76,7 +76,7 @@ class ApacheParserTest(TestCase):
         result = self.parser.get_links(self.root_page, "https://keisari.net/videos/")
 
         self.assertEqual(result["happyday.mp4"]["size"], 772000)
-        self.assertEqual(result["alex_räjähtää.mp4"]["size"], 715000)
+        self.assertEqual(result["alex_r%c3%a4j%c3%a4ht%c3%a4%c3%a4.mp4"]["size"], 715000)
 
     def test_link_type(self):
         result = self.parser.get_links(self.root_page, "https://keisari.net/videos/")
@@ -109,16 +109,67 @@ class ApacheParserTest2(TestCase):
     def test_link_size(self):
         result = self.parser.get_links(self.root_page, self.base_url)
 
-        self.assertEqual(result["ƒhƒ‰ƒSƒ“ƒ{[ƒ‹Z.‘æ020˜b.u‚æ‚Ý‚ª‚¦‚éƒTƒCƒ„l“`àIŒå‹ó‚Ìƒ‹[ƒcv.wmv"]["size"], 179721000)
-        self.assertEqual(result["ƒhƒ‰ƒSƒ“ƒ{[ƒ‹Z.‘æ225˜b.u‹­‚¢‚ºƒ`ƒrƒbƒRII‚P‚W†‘å‹êíIHv.wmv"]["size"], 347507000)
+        self.assertEqual(result["ƒhƒ‰ƒSƒ“ƒ{[ƒ‹Z.‘æ011˜b.u‰F’ˆˆê‚Ì‹­íŽmƒTƒCƒ„l‚ß‚´‚ß‚éIv.wmv"]["size"], 232185000)
+        self.assertEqual(result["ƒhƒ‰ƒSƒ“ƒ{[ƒ‹Z.‘æ019˜b.ud—Í‚Æ‚Ìí‚¢Iƒoƒuƒ‹ƒXŒN‚ð‚Â‚©‚Ü‚¦‚ëv.wmv"]["size"], 185385000)
 
     def test_link_type(self):
         result = self.parser.get_links(self.root_page, self.base_url)
 
-        self.assertEqual(result["ƒhƒ‰ƒSƒ“ƒ{[ƒ‹Z.‘æ225˜b.u‹­‚¢‚ºƒ`ƒrƒbƒRII‚P‚W†‘å‹êíIHv.wmv"]["type"], "f")
-        self.assertEqual(result["ƒhƒ‰ƒSƒ“ƒ{[ƒ‹Z jpg/"]["type"], "d")
+        self.assertEqual(result["ƒhƒ‰ƒSƒ“ƒ{[ƒ‹Z.‘æ011˜b.u‰F’ˆˆê‚Ì‹­íŽmƒTƒCƒ„l‚ß‚´‚ß‚éIv.wmv"]["type"], "f")
+        self.assertEqual(result["ƒhƒ‰ƒSƒ“ƒ{[ƒ‹Z%20jpg/"]["type"], "d")
 
     def test_link_extension(self):
         result = self.parser.get_links(self.root_page, self.base_url)
 
-        self.assertEqual(result["ƒhƒ‰ƒSƒ“ƒ{[ƒ‹Z.‘æ225˜b.u‹­‚¢‚ºƒ`ƒrƒbƒRII‚P‚W†‘å‹êíIHv.wmv"]["ext"], "wmv")
+        self.assertEqual(result["ƒhƒ‰ƒSƒ“ƒ{[ƒ‹Z.‘æ011˜b.u‰F’ˆˆê‚Ì‹­íŽmƒTƒCƒ„l‚ß‚´‚ß‚éIv.wmv"]["ext"], "wmv")
+
+
+class ApacheParserTest3(TestCase):
+
+    def setUp(self):
+        self.parser = ApacheParser()
+
+        root_page_file = open("test_apache3.html", "r")
+        self.root_page = root_page_file.read()
+        self.base_url = "http://files.duspectacle.com/mp3/Jardinets/"
+        root_page_file.close()
+
+    def test_link_count(self):
+
+        result = self.parser.get_links(self.root_page, self.base_url)
+
+        self.assertEqual(len(result), 21)
+
+    def test_link_size(self):
+        result = self.parser.get_links(self.root_page, self.base_url)
+
+        self.assertEqual(result["15%20Woodkid%20-%20Iron%20(Remix%20By%20Gucci%20Vump).mp3"]["size"], 9300000)
+        self.assertEqual(result["16%20Yellow%20Ostrich%20-%20WHALE.mp3"]["size"], 7100000)
+
+    def test_link_type(self):
+        result = self.parser.get_links(self.root_page, self.base_url)
+
+        self.assertEqual(result["15%20Woodkid%20-%20Iron%20(Remix%20By%20Gucci%20Vump).mp3"]["type"], "f")
+        self.assertEqual(result["01%20Jean%20Rochefort%20-%20Winnie%20et%20ses%20amis%20(introduction)/"]["type"], "d")
+
+    def test_link_extension(self):
+        result = self.parser.get_links(self.root_page, self.base_url)
+
+        self.assertEqual(result["15%20Woodkid%20-%20Iron%20(Remix%20By%20Gucci%20Vump).mp3"]["ext"], "mp3")
+
+
+class ApacheParserTest4(TestCase):
+
+    def setUp(self):
+        self.parser = ApacheParser()
+
+        root_page_file = open("test_apache4.html", "r")
+        self.root_page = root_page_file.read()
+        self.base_url = "http://jenserserver.no-ip.biz/movieserver/serien/bigbangtheorie/S3/"
+        root_page_file.close()
+
+    def test_link_size(self):
+        result = self.parser.get_links(self.root_page, self.base_url)
+
+        self.assertEqual(result["The.Big.Bang.Theory.S03E06.Football.fuer.Nerds.German.WS.DVDRip.XviD-DELiCiOUS.avi"]["size"], 175000000)
+        self.assertEqual(result["The.Big.Bang.Theory.S03E03.Sex.oder.Pralinen.German.WS.DVDRip.XviD-DELiCiOUS.avi"]["size"], 0)

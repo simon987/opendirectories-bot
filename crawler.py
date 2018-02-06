@@ -2,18 +2,40 @@ import requests
 from parser import NginxParser, ApacheParser
 from reports import ReportSaver, ReportBuilder
 
-headers = {
-    'User-Agent': "Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-}
-
 
 class Crawler:
 
-    def __init__(self, url):
-        self.parser = NginxParser()
+    def __init__(self, url, test_url):
         self.files = []
         self.base_url = url
+
+        if test_url:
+            # Test url
+            r = requests.get(self.base_url, timeout=30)
+
+            self.parser = self.guess_parser(r.text, r.headers)()
+
+            print("Using " + self.parser.__class__.__name__ + " as parser")
+
+        else:
+            self.parser = None
+
+    @staticmethod
+    def guess_parser(text, headers):
+
+        server = headers["Server"] if "Server" in headers else ""
+
+        # try nginx
+        parser = NginxParser()
+        if parser.page_is_valid(text):
+            return NginxParser
+
+        # Try apache
+        parser = ApacheParser()
+        if parser.page_is_valid(text):
+            return ApacheParser
+
+        return None
 
     def crawl(self, address=None):
 
@@ -53,6 +75,7 @@ class Crawler:
             f.write(report_saver.to_link_list())
 
 
-c = Crawler("http://dl.upload8.in/files/Serial/Altered%20Carbon/")
-c.crawl()
-c.store_report("000002")
+if __name__ == "__main__":
+    c = Crawler("https://repo.zenk-security.com/", True)
+    c.crawl()
+    c.store_report("000007")

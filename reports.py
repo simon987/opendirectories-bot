@@ -91,6 +91,7 @@ class ReportSaver:
         out["ext_sizes"] = self.builder.get_ext_sizes()
         out["ext_sizes_formatted"] = self.builder.get_ext_sizes_formatted()
         out["report_time"] = str(self.builder.report_time)
+        out["total_count"] = len(self.builder.files)
 
         return json.dumps(out)
 
@@ -103,6 +104,7 @@ class ReportSaver:
         out["ext_count"] = self.builder.get_ext_counts()
         out["ext_sizes"] = self.builder.get_ext_sizes()
         out["report_time"] = str(self.builder.report_time)
+        out["total_count"] = len(self.builder.files)
 
         return json.dumps(out)
 
