@@ -50,8 +50,10 @@ class PageParser:
 
     @staticmethod
     def should_save_link(text):
+
         return text.lower().find("parent directory") == -1 and text != "Name" and text != "Last modified" and \
-               text != "Size" and text != "Description " and text != "Description" and text != "../"
+               text != "Size" and text != "Description " and text != "Description" and text != "../" and text != "" and\
+               text is not None
 
     @staticmethod
     def file_type(link):
@@ -170,28 +172,30 @@ class ApacheParser(PageParser):
                 if len(row.find_all("th")) > 0:
                     continue
 
-                link = row.find("a")
+                links_in_row = row.find_all("a")
 
-                if link is None:
-                    # Exited directory listing
-                    return links
-                if PageParser.should_save_link(link.text):
+                for link in links_in_row:
+                    if link is None:
+                        # Exited directory listing
+                        return links
 
-                    target = link.get("href")
-                    file_type = PageParser.file_type(target)
-                    full_link = urljoin(base_url, target)
+                    if PageParser.should_save_link(link.text):
 
-                    if file_type == "f":
-                        extension = os.path.splitext(full_link)[1].strip(".")
+                        target = link.get("href")
+                        file_type = PageParser.file_type(target)
+                        full_link = urljoin(base_url, target)
 
-                        cols = row.find_all("td")
-                        for i in range(len(cols)):
-                            cols[i] = cols[i].string if cols[i].string is not None else "-"
-                        size = self.get_size(cols)
+                        if file_type == "f":
+                            extension = os.path.splitext(full_link)[1].strip(".")
 
-                        links[target] = dict(link=full_link, size=size, ext=extension, type=file_type)
-                    else:
-                        links[target] = dict(link=full_link, type=file_type)
+                            cols = row.find_all("td")
+                            for i in range(len(cols)):
+                                cols[i] = cols[i].string if cols[i].string is not None else "-"
+                            size = self.get_size(cols)
+
+                            links[target] = dict(link=full_link, size=size, ext=extension, type=file_type)
+                        else:
+                            links[target] = dict(link=full_link, type=file_type)
         else:
 
             for link in soup.find_all("a"):

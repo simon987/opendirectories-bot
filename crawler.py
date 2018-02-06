@@ -92,7 +92,8 @@ class Crawler:
 
 
 if __name__ == "__main__":
-    c = Crawler("http://cnqzu.com/library/Anarchy%20Folder/Computers/", True)
+    c = Crawler("https://data.kemt.fei.tuke.sk/Mikrovlnova_technika/RFSim99/", True)
     c.crawl()
+    print(c.files)
     c.store_report("000008")
 
