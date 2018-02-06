@@ -23,10 +23,22 @@ class CrawlerTest(TestCase):
 
         self.assertEqual(c.guess_parser(text, {}), NginxParser)
 
-    def test_guess_parser3(self):
-        with open("test_invalid.html", "r") as f:
-            text = f.read()
+    # def test_guess_parser3(self):
+    #     with open("test_invalid.html", "r") as f:
+    #         text = f.read()
+    #
+    #     c = Crawler("http://some.website", False)
+    #
+    #     self.assertEqual(c.guess_parser(text, {}), None)
 
-        c = Crawler("http://some.website", False)
+    def test_invalid_schema(self):
 
-        self.assertEqual(c.guess_parser(text, {}), None)
+        c1 = Crawler("http://google.com/", False)
+        c2 = Crawler("https://google.com/", False)
+        c3 = Crawler("ftp://website.com/", False)
+        c4 = Crawler("ws://website.com/", False)
+
+        self.assertIsNotNone(c1.parser)
+        self.assertIsNotNone(c2.parser)
+        self.assertIsNone(c3.parser)
+        self.assertIsNone(c4.parser)

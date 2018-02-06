@@ -221,8 +221,7 @@ class ApacheParser(PageParser):
     def page_is_valid(self, text):
 
         try:
-            links = self.get_links(text, "")
-            print(links)
+            self.get_links(text, "")
             return True
         except Exception as e:
             print("This is not recognised Apache open directory: " + str(e))

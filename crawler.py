@@ -9,15 +9,28 @@ class Crawler:
         self.files = []
         self.base_url = url
 
-        if test_url:
-            # Test url
-            r = requests.get(self.base_url, timeout=30)
+        if url.startswith("http"):
+            if test_url:
+                # Test url
+                try:
+                    r = requests.get(self.base_url, timeout=10)  # todo change to 30
 
-            self.parser = self.guess_parser(r.text, r.headers)()
+                    if r.status_code == 200:
+                        self.parser = self.guess_parser(r.text, r.headers)()
 
-            print("Using " + self.parser.__class__.__name__ + " as parser")
+                        print("Using " + self.parser.__class__.__name__ + " as parser")
+                    else:
+                        print("Couldn't connect (" + str(r.status_code) + ")")
+                        self.parser = None
 
+                except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError):
+                    print("Timed out / Connection refused")
+                    self.parser = None
+            else:
+                print("Using ApacheParser by default because test_url was set to False")
+                self.parser = ApacheParser()  # Default parser
         else:
+            print("Invalid Schema")
             self.parser = None
 
     @staticmethod
@@ -38,6 +51,9 @@ class Crawler:
         return None
 
     def crawl(self, address=None):
+
+        if self.parser is None:
+            return
 
         if address is None:
             address = self.base_url
@@ -76,6 +92,7 @@ class Crawler:
 
 
 if __name__ == "__main__":
-    c = Crawler("https://repo.zenk-security.com/", True)
+    c = Crawler("http://cnqzu.com/library/Anarchy%20Folder/Computers/", True)
     c.crawl()
-    c.store_report("000007")
+    c.store_report("000008")
+
