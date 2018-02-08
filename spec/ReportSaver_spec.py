@@ -1,6 +1,6 @@
 import pickle
 from unittest import TestCase
-from reports import ReportSaver, ReportBuilder
+from crawl_report import ReportSaver, ReportBuilder
 import json
 
 
@@ -10,7 +10,7 @@ class ReportSaverTest(TestCase):
         with open("test_report.pkl", 'rb') as f:
             self.files = pickle.load(f)
 
-        self.report_saver = ReportSaver(self.files, ReportBuilder(self.files, "https://server.elscione.com/"))
+        self.report_saver = ReportSaver(self.files, "", ReportBuilder(self.files,"https://server.elscione.com/"))
 
         with open("test_report.json", 'r') as f:
             self.expected_json = f.read()

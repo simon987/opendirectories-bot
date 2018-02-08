@@ -1,6 +1,7 @@
 import humanfriendly
 import datetime
 import json
+import operator
 
 
 class ReportBuilder:
@@ -23,9 +24,9 @@ class ReportBuilder:
         size = self.get_total_size()
 
         if size == 0:
-            return "Unknown (or empty)"
+            return "Unknown"
 
-        return humanfriendly.format_size(size, True) + " (" + str(size) + " bytes)"
+        return humanfriendly.format_size(size, True)
 
     def get_ext_counts(self):
 
@@ -62,15 +63,16 @@ class ReportBuilder:
         ext_sizes = self.get_ext_sizes()
 
         for ext in ext_sizes:
-            ext_sizes[ext] = humanfriendly.format_size(ext_sizes[ext])
+            ext_sizes[ext] = humanfriendly.format_size(ext_sizes[ext], True)
         return ext_sizes
 
 
 class ReportSaver:
 
-    def __init__(self, files, builder: ReportBuilder):
+    def __init__(self, files, title, builder: ReportBuilder):
         self.files = files
         self.builder = builder
+        self.title = title
 
     def to_json(self):
 
@@ -92,6 +94,7 @@ class ReportSaver:
         out["ext_sizes_formatted"] = self.builder.get_ext_sizes_formatted()
         out["report_time"] = str(self.builder.report_time)
         out["total_count"] = len(self.builder.files)
+        out["post_title"] = self.title
 
         return json.dumps(out)
 
@@ -105,6 +108,7 @@ class ReportSaver:
         out["ext_sizes"] = self.builder.get_ext_sizes()
         out["report_time"] = str(self.builder.report_time)
         out["total_count"] = len(self.builder.files)
+        out["post_title"] = self.title
 
         return json.dumps(out)
 

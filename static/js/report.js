@@ -5,13 +5,16 @@ xhttp.onreadystatechange = function() {
 
         console.log("Received: " + this.responseText);
 
-        drawCharts(JSON.parse(this.responseText))
+        var rData = this.responseText;
+
+        drawChart(JSON.parse(rData));
+        fillTable(JSON.parse(rData));
     }
 };
 xhttp.open("GET", "./json_chart", true);
 xhttp.send();
 
-function drawCharts(rData) {
+function drawChart(rData) {
 
     var dataSetSize = [];
     var dataSetCount = [];
@@ -49,7 +52,7 @@ function drawCharts(rData) {
         type: 'pie',
         data: {
             datasets: [{
-                data: rData["total_size"] === 0 ? dataSetCount : dataSetSize,
+                data: rData["total_size"] < 100000 ? dataSetCount : dataSetSize,
                 backgroundColor: colors
             }],
 
@@ -65,6 +68,15 @@ function drawCharts(rData) {
     });
 }
 
+function fillTable(rData) {
+
+    document.getElementById("baseUrl").innerHTML = rData["base_url"];
+    document.getElementById("fileCount").innerHTML = rData["total_count"];
+    document.getElementById("totalSize").innerHTML = humanFileSize(rData["total_size"]);
+    document.getElementById("reportTime").innerHTML = rData["report_time"];
+
+}
+
 
 function isRelevant(rData, ext) {
 
@@ -73,7 +85,7 @@ function isRelevant(rData, ext) {
     console.log("size + " + rData["ext_count"][ext]);
     console.log("min + " + 0.03 * rData["total_count"]);
 
-    if(rData["total_size"] === 0) {
+    if(rData["total_size"] < 100000) {
         return rData["ext_count"][ext] > 0.03 * rData["total_count"]
     } else {
         return rData["ext_sizes"][ext] > 0.005 * rData["total_size"]

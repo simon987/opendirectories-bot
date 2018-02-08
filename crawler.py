@@ -1,12 +1,13 @@
 import requests
 from parser import NginxParser, ApacheParser
-from reports import ReportSaver, ReportBuilder
+from crawl_report import ReportSaver, ReportBuilder
 
 
 class Crawler:
 
     def __init__(self, url, test_url):
         self.files = []
+        self.parsed_urls = []
         self.base_url = url
 
         if url.startswith("http"):
@@ -52,6 +53,11 @@ class Crawler:
 
     def crawl(self, address=None):
 
+        # Prevent unwanted recursion
+        if address is not None and address in self.parsed_urls:
+            return
+        self.parsed_urls.append(address)
+
         if self.parser is None:
             return
 
@@ -71,6 +77,9 @@ class Crawler:
                 print("Timeout, " + str(retries) + " retries left")
                 retries -= 1
 
+                if retries == 0:
+                    return
+
         links = self.parser.get_links(response.text, address)
 
         for k in links:
@@ -80,8 +89,8 @@ class Crawler:
             else:
                 self.files.append(dict(link=links[k]["link"], size=links[k]["size"], ext=links[k]["ext"]))
 
-    def store_report(self, report_id):
-        report_saver = ReportSaver(self.files, ReportBuilder(self.files, self.base_url))
+    def store_report(self, report_id, title):
+        report_saver = ReportSaver(self.files,title, ReportBuilder(self.files, self.base_url))
 
         with open("static/reports/" + report_id + "_chart.json", "w") as f:
             f.write(report_saver.to_json_chart())
@@ -92,15 +101,15 @@ class Crawler:
 
 
 if __name__ == "__main__":
-    c = Crawler("http://dl.apkhome.org/", True)
+    c = Crawler("http://www.downloads.imune.net/medicalbooks/", True)
     c.crawl()
 
-    r = ReportBuilder(c.files, "http://dl.apkhome.org/")
+    r = ReportBuilder(c.files, "http://www.downloads.imune.net/medicalbooks/")
     print(r.get_total_size_formatted())
 
-    for f in c.files:
-        if f["size"] > 1000000:
-            print(f)
+    # for f in c.files:
+    #     if f["size"] > 1000000:
+    #         print(f)
 
-    c.store_report("000009")
+    c.store_report("000011", "test")
 

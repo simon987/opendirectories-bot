@@ -1,5 +1,6 @@
 from flask import Flask, render_template, abort
 import os
+import ssl
 
 app = Flask(__name__)
 
@@ -54,4 +55,6 @@ def is_valid_id(report_id: str):
 
 
 if __name__ == '__main__':
-    app.run("0.0.0.0")
+    context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+    context.load_cert_chain('certificates/cert.crt', 'certificates/privkey.pem')
+    app.run("0.0.0.0", ssl_context=context)

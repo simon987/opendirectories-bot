@@ -1,6 +1,6 @@
 import pickle
 from unittest import TestCase
-from reports import ReportBuilder
+from crawl_report import ReportBuilder
 
 
 class ReportBuilderTest(TestCase):
@@ -19,7 +19,7 @@ class ReportBuilderTest(TestCase):
     def test_total_size_formatted(self):
         result = self.report_builder.get_total_size_formatted()
 
-        self.assertEqual(result, "426.74 GB (426737457589 bytes)")
+        self.assertEqual(result, "426.74 GB")
 
     def test_ext_counts(self):
 
