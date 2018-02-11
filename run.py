@@ -12,7 +12,7 @@ subreddit = reddit.subreddit("opendirectories")
 
 subs = []
 
-for submission in subreddit.new(limit=50):
+for submission in subreddit.new(limit=3):
     subs.append(submission)
 
 bot = RedditBot("crawled.txt")
@@ -47,11 +47,12 @@ def execute_task(submission):
                 print(com_string)
                 while True:
                     try:
-                        submission.reply(com_string)
-                        bot.log_crawl(submission.id)
+                        if not bot.has_crawled(submission.id):
+                            submission.reply(com_string)
+                            bot.log_crawl(submission.id)
                         break
                     except Exception as e:
-                        print("Waiting 5 minutes: " + str(e))
+                        print("Waiting 10 minutes: " + str(e))
                         time.sleep(600)
                         continue
 
@@ -67,16 +68,11 @@ while len(tq.tasks) > 0:
     if task is not None:
         if not bot.has_crawled(task.submission.id):
             p = Process(target=execute_task, args={task.submission})
-            p.daemon = True
             p.start()
             print("Started process for " + task.submission.title)
         else:
             print("Already crawled " + task.submission)
 
-
-while True:
-    time.sleep(1)
-    print("Waiting..")
 
 
 
