@@ -136,23 +136,24 @@ class NginxParser(PageParser):
         try:
             if PageParser.should_save_link(link.text):
                 target = link.get("href")
-                short_file_name = os.path.split(target)[1]
-                full_link = urljoin(base_url, target)
-                file_type = PageParser.file_type(target)
+                if target is not None:
+                    short_file_name = os.path.split(target)[1]
+                    full_link = urljoin(base_url, target)
+                    file_type = PageParser.file_type(target)
 
-                if file_type == "f":
-                    extension = os.path.splitext(full_link)[1].strip(".")
+                    if file_type == "f":
+                        extension = os.path.splitext(full_link)[1].strip(".")
 
-                    # Parse size
-                    target_index = text.find("</a", text.find(target))
-                    date_and_size = text[target_index:text.find("<a", target_index)]
+                        # Parse size
+                        target_index = text.find("</a", text.find(target))
+                        date_and_size = text[target_index:text.find("<a", target_index)]
 
-                    cols = re.split("\s+", date_and_size)
-                    size = self.get_size(cols[1:], short_file_name)
+                        cols = re.split("\s+", date_and_size)
+                        size = self.get_size(cols[1:], short_file_name)
 
-                    return target, dict(link=full_link, size=size, ext=extension, type=file_type)
-                else:
-                    return target, dict(link=full_link, type=file_type)
+                        return target, dict(link=full_link, size=size, ext=extension, type=file_type)
+                    else:
+                        return target, dict(link=full_link, type=file_type)
         except Exception as e:
             print("Couldn't parse link " + link.get("href") + str(e))
             raise e
@@ -188,21 +189,22 @@ class ApacheParser(PageParser):
                     if PageParser.should_save_link(link.text):
 
                         target = link.get("href")
-                        short_file_name = os.path.split(target)[1]
-                        file_type = PageParser.file_type(target)
-                        full_link = urljoin(base_url, target)
+                        if target is not None:
+                            short_file_name = os.path.split(target)[1]
+                            file_type = PageParser.file_type(target)
+                            full_link = urljoin(base_url, target)
 
-                        if file_type == "f":
-                            extension = os.path.splitext(full_link)[1].strip(".")
+                            if file_type == "f":
+                                extension = os.path.splitext(full_link)[1].strip(".")
 
-                            cols = row.find_all("td")
-                            for i in range(len(cols)):
-                                cols[i] = cols[i].string if cols[i].string is not None else "-"
-                            size = self.get_size(cols[1:], short_file_name)
+                                cols = row.find_all("td")
+                                for i in range(len(cols)):
+                                    cols[i] = cols[i].string if cols[i].string is not None else "-"
+                                size = self.get_size(cols[1:], short_file_name)
 
-                            links[target] = dict(link=full_link, size=size, ext=extension, type=file_type)
-                        else:
-                            links[target] = dict(link=full_link, type=file_type)
+                                links[target] = dict(link=full_link, size=size, ext=extension, type=file_type)
+                            else:
+                                links[target] = dict(link=full_link, type=file_type)
         else:
 
             for link in soup.find_all("a"):
@@ -210,23 +212,24 @@ class ApacheParser(PageParser):
                 if PageParser.should_save_link(link.text):
 
                     target = link.get("href")
-                    short_file_name = os.path.split(target)[1]
-                    full_link = urljoin(base_url, target)
-                    file_type = PageParser.file_type(target)
+                    if target is not None:
+                        short_file_name = os.path.split(target)[1]
+                        full_link = urljoin(base_url, target)
+                        file_type = PageParser.file_type(target)
 
-                    if file_type == "f":
-                        extension = os.path.splitext(full_link)[1].strip(".")
+                        if file_type == "f":
+                            extension = os.path.splitext(full_link)[1].strip(".")
 
-                        target_index = text.find("</a", text.find(target))
-                        date_and_size = text[target_index:text.find("<a", target_index)]  #  in some cases we,re looking for </pre instead
-                        date_and_size = text[target_index:text.find("</pre", target_index)] if text.find("<a", target_index) == -1 else date_and_size
+                            target_index = text.find("</a", text.find(target))
+                            date_and_size = text[target_index:text.find("<a", target_index)]  #  in some cases we,re looking for </pre instead
+                            date_and_size = text[target_index:text.find("</pre", target_index)] if text.find("<a", target_index) == -1 else date_and_size
 
-                        cols = re.split("\s+", date_and_size)
-                        size = self.get_size(cols[1:], short_file_name)
+                            cols = re.split("\s+", date_and_size)
+                            size = self.get_size(cols[1:], short_file_name)
 
-                        links[target] = dict(link=full_link, size=size, ext=extension, type=file_type)
-                    else:
-                        links[target] = dict(link=full_link, type=file_type)
+                            links[target] = dict(link=full_link, size=size, ext=extension, type=file_type)
+                        else:
+                            links[target] = dict(link=full_link, type=file_type)
 
         return links
 
