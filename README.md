@@ -39,7 +39,7 @@ Note that on some Linux distributions including Ubuntu and Fedora the pip comman
 
 $ command -v pip3
 
-To install pip, securely download get-pip.py. [1]:
+To install pip, securely download get-pip.py.
 
 $ curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 
