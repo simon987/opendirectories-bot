@@ -44,9 +44,13 @@ $ sudo python get-pip.py
 Using the Script:
 
 $ git clone https://github.com/simon987/opendirectories-bot.git
+
 $ cd opendirectories-bot/
+
 $ mkdir static/reports
+
 $ pip3 install -r requirements.txt
+
 $ python3 manual.py mkreport "{{URL}}" "{{6 character id}}"
 
 
