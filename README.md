@@ -2,7 +2,9 @@
 Installation Instructions:
 
 Python 3 is required to run the script.
+
 To install Python 3 follow the steps below in Ubuntu (Other Distros too have same procedure).
+
 Check installed Python version
 
 $ python3 --version
