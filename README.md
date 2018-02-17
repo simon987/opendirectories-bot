@@ -14,13 +14,17 @@ $ sudo apt-get update
 If you are using Ubuntu 16.10 or newer, then you can easily install Python 3.6 with the following commands:
 
 $ sudo apt-get update
+
 $ sudo apt-get install python3.6
 
 If you’re using another version of Ubuntu (e.g. the latest LTS release), we recommend using the deadsnakes PPA to install Python 3.6:
 
 $ sudo apt-get install software-properties-common
+
 $ sudo add-apt-repository ppa:deadsnakes/ppa
+
 $ sudo apt-get update
+
 $ sudo apt-get install python3.6
 
 Python 2.7.9 and later (on the python2 series), and Python 3.4 and later include pip by default.
