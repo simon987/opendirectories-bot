@@ -1,5 +1,6 @@
 # opendirectories-bot
 Installation Instructions:
+
 Python 3 is required to run the script.
 To install Python 3 follow the steps below in Ubuntu (Other Distros too have same procedure).
 Check installed Python version
@@ -50,5 +51,6 @@ $ python3 manual.py mkreport "{{URL}}" "{{6 character id}}"
 
 
 Example Usage:
+
 python3 manual.py mkreport "http://example.com/library/ePub/" "list.json" 
 
