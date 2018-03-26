@@ -1,6 +1,7 @@
 import requests
 from parser import NginxParser, ApacheParser
 from crawl_report import ReportSaver, ReportBuilder
+import os
 
 
 class Crawler:
@@ -8,7 +9,7 @@ class Crawler:
     def __init__(self, url, test_url):
         self.files = []
         self.parsed_urls = []
-        self.base_url = url
+        self.base_url = os.path.join(url, '')
 
         if url.startswith("http"):
             if test_url:
