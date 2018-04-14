@@ -1,4 +1,4 @@
-from parser import NginxParser, PageParser, ApacheParser
+from parsing import NginxParser, PageParser, ApacheParser
 
 from unittest import TestCase
 

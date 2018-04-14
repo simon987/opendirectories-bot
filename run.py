@@ -1,4 +1,3 @@
-import pickle
 from crawler import Crawler
 from reddit_bot import RedditBot, TaskQueue, CrawTask, CommentBuilder, ReportBuilder
 import time
@@ -6,7 +5,7 @@ from multiprocessing import Process
 import praw
 
 reddit = praw.Reddit('opendirectories-bot',
- user_agent='github.com/simon987/opendirectories-bot v1.0  (by /u/Hexahedr_n)')
+                     user_agent='github.com/simon987/opendirectories-bot v1.0  (by /u/Hexahedr_n)')
 
 subreddit = reddit.subreddit("opendirectories")
 

@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from parser import ApacheParser, NginxParser
+from parsing import ApacheParser, NginxParser
 from crawler import Crawler
 
 

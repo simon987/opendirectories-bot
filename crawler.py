@@ -1,5 +1,5 @@
 import requests
-from parser import NginxParser, ApacheParser
+from parsing import NginxParser, ApacheParser
 from crawl_report import ReportSaver, ReportBuilder
 import os
 

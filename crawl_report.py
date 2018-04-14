@@ -1,7 +1,6 @@
 import humanfriendly
 import datetime
 import json
-import operator
 
 
 class ReportBuilder:

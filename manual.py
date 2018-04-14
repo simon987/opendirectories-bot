@@ -3,50 +3,52 @@ from crawler import Crawler
 from crawl_report import ReportBuilder
 from reddit_bot import CommentBuilder
 
-if len(sys.argv) > 1:
+if __name__ == "__main__":
 
-    command = sys.argv[1]
+    if len(sys.argv) > 1:
 
-    if command == "crawl":
-        if len(sys.argv) > 2:
-            url = sys.argv[2]
+        command = sys.argv[1]
 
-            c = Crawler(url, True)
-            c.crawl()
+        if command == "crawl":
+            if len(sys.argv) > 2:
+                url = sys.argv[2]
 
-            print("Done")
-            r = ReportBuilder(c.files, url)
-            print(r.get_total_size_formatted())
+                c = Crawler(url, True)
+                c.crawl()
 
-    if command == "mkreport":
-        if len(sys.argv) > 3:
-            url = sys.argv[2]
-            report_id = sys.argv[3]
+                print("Done")
+                r = ReportBuilder(c.files, url)
+                print(r.get_total_size_formatted())
 
-            c = Crawler(url, True)
-            c.crawl()
+        if command == "mkreport":
+            if len(sys.argv) > 3:
+                url = sys.argv[2]
+                report_id = sys.argv[3]
 
-            print("Done")
-            r = ReportBuilder(c.files, url)
-            print(r.get_total_size_formatted())
+                c = Crawler(url, True)
+                c.crawl()
 
-            c.store_report(report_id, "")
+                print("Done")
+                r = ReportBuilder(c.files, url)
+                print(r.get_total_size_formatted())
 
-    if command == "getcomment":
-        if len(sys.argv) > 3:
-            url = sys.argv[2]
-            report_id = sys.argv[3]
+                c.store_report(report_id, "")
 
-            c = Crawler(url, True)
-            c.crawl()
+        if command == "getcomment":
+            if len(sys.argv) > 3:
+                url = sys.argv[2]
+                report_id = sys.argv[3]
 
-            print("Done")
-            r = ReportBuilder(c.files, url)
-            print(r.get_total_size_formatted())
+                c = Crawler(url, True)
+                c.crawl()
 
-            com_buider = CommentBuilder(ReportBuilder(c.files, c.base_url), url, report_id)
-            print(com_buider.get_comment())
+                print("Done")
+                r = ReportBuilder(c.files, url)
+                print(r.get_total_size_formatted())
+
+                com_buider = CommentBuilder(ReportBuilder(c.files, c.base_url), url, report_id)
+                print(com_buider.get_comment())
 
 
-else:
-    print("Invalid argument count")
+    else:
+        print("Invalid argument count")
